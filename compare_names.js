@@ -1393,11 +1393,3 @@ function cleanIpasTogether(ipa1, ipa2) {
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "s", "z", allIPAVowels, ['-']);
   return [ipa1, ipa2];
 }
-
-
-
-
-
-
-
-console.log(compareTwoNames("Johnny Weymouth", "Jean Weymith"))
