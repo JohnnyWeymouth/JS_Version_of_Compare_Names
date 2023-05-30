@@ -1,3 +1,12 @@
+const fs = require('fs');
+const fuzz = require('fuzzball')
+const ipa_one_syllable = JSON.parse(fs.readFileSync('_ipa_one_syllable.json'));
+const ipa_all_names = JSON.parse(fs.readFileSync('_ipa_all_names.json'));
+
+
+
+
+
 function compareTwoNames(full_name1, full_name2) {
   var generic_name, name_too_short, names_match, reasoning, word_combo;
   full_name1 = cleanNameByItself(full_name1);
@@ -367,7 +376,6 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = removeArticles(fullName1, fullName2, "von");
   [fullName1, fullName2] = removeArticles(fullName1, fullName2, "van");
 
-  
   // Take care of weird spellings by comparing to the other name
   [fullName1, fullName2] = fixBothNamesSpellingWithRegex(fullName1, fullName2, "ij\\b", "y\\b", "y ");
   [fullName1, fullName2] = fixBothNamesSpellingWithRegex(fullName1, fullName2, "ow", "au", "au");
@@ -508,7 +516,6 @@ function findWhichWordsMatchAndHowWell(name1, name2) {
       let word2 = words2[j];
       
       // Gets the score for how well the words match by using fuzz.partial_ratio
-      const fuzz = require('fuzzball')
       let score = fuzz.partial_ratio(word1, word2);
 
       // Unless word1 or word2 is only an initial, 
@@ -531,30 +538,6 @@ function findWhichWordsMatchAndHowWell(name1, name2) {
   let min_length = Math.min(words1.length, words2.length);
 
   // Generate all combinations of tuples with length equal to the number of words in string2
-  function generateCombinations(scores, n) {
-    const combinations = [];
-  
-    function backtrack(combination, start) {
-      if (combination.length === n) {
-        combinations.push([...combination]);
-        return;
-      }
-  
-      for (let i = start; i < scores.length; i++) {
-        const [word1, word2, score] = scores[i];
-        const hasDuplicate = combination.some(([prevWord1, prevWord2]) => prevWord1 === word1 || prevWord2 === word2);
-        
-        if (!hasDuplicate) {
-          combination.push([word1, word2, score]);
-          backtrack(combination, i + 1);
-          combination.pop();
-        }
-      }
-    }
-
-    backtrack([], 0);
-    return combinations;
-  }
   let valid_combinations = generateCombinations(scores, min_length)
   
   // Cleans the valid combinations
@@ -593,6 +576,50 @@ function findWhichWordsMatchAndHowWell(name1, name2) {
 
   // Returns the combination of word matches that are the closest match
   return best_combo;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function generateCombinations(scores, n) {
+  const combinations = [];
+
+  function backtrack(combination, start) {
+    if (combination.length === n) {
+      combinations.push([...combination]);
+      return;
+    }
+
+    for (let i = start; i < scores.length; i++) {
+      const [word1, word2, score] = scores[i];
+      const hasDuplicate = combination.some(([prevWord1, prevWord2]) => prevWord1 === word1 || prevWord2 === word2);
+      
+      if (!hasDuplicate) {
+        combination.push([word1, word2, score]);
+        backtrack(combination, i + 1);
+        combination.pop();
+      }
+    }
+  }
+
+  backtrack([], 0);
+  return combinations;
 }
 
 
@@ -928,8 +955,8 @@ function isGenericName(name1, name2) {
 
 
 
-const surnamesList = require('./_top_surnames.json');
 function hasRareSurname(name) {
+  const surnamesList = require('./_top_surnames.json');
   // Isolates the last name
   const nameLower = name.toLowerCase();
   const lastName = nameLower.split(' ').pop();
@@ -1000,7 +1027,6 @@ function spellingComparison(name1, name2) {
 
 
 
-
 function pronunciationComparison(name1, name2, namePairs) {
   // Gets Ipas
   let ipaOfName1 = getPronunciation(name1);
@@ -1046,14 +1072,8 @@ function pronunciationComparison(name1, name2, namePairs) {
   // Gets the length of the shortest word
   const minLength = Math.min(ipaWords1.length, ipaWords2.length);
 
-  // Generates all combinations of tuples with length equal to the number of words in string2
-  const combinations = itertools.combinations(scores, minLength);
-
-  // Filters the combinations to include only valid combinations
-  const validCombinations = combinations.filter(
-      (combination) => new Set(combination.map((tuple) => tuple[0])).size === combination.length &&
-          new Set(combination.map((tuple) => tuple[1])).size === combination.length
-  );
+  // Generate all combinations of tuples with length equal to the number of words in string2
+  let validCombinations = generateCombinations(scores, minLength)
 
   // Finds the combination with the maximum sum
   const maxCombination = validCombinations.reduce((max, combination) => {
@@ -1137,6 +1157,7 @@ function getPronunciation(fullname) {
 
 
 
+
 function getIpaOfOneWord(word) {
   // Setup
   word = word.replace(/ /g, "");
@@ -1146,7 +1167,7 @@ function getIpaOfOneWord(word) {
   const pronunciationList = Array(word.length).fill("");
 
   // Tries to get the ipa from the plain word
-  const firstAttempt = convert(word);
+  const firstAttempt = hailMary(word);
   if (!firstAttempt.includes("*")) {
       return firstAttempt;
   }
@@ -1229,101 +1250,16 @@ function getIpaOfOneWord(word) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// TODO : Fix by not using the stupid slow package, but instead use the two ipa json files
-function convert(myString){
-  const textToIPA = require('text-to-ipa')
-  result = (textToIPA.lookup(myString)).text
-  if(textToIPA.lookup(myString).error === "undefined"){
-    return myString + "*"
-  }
-
-  if (result.includes("OR")){
-    const split = result.split("OR")
-    function setShortestString(strings) {
-      if (strings.length === 0) {
-          return ""; // Handle empty list case
-      }
-      let shortestString = strings[0]; // Set the initial value to the first string
-      for (let i = 1; i < strings.length; i++) {
-          if (strings[i].length < shortestString.length) {
-            shortestString = strings[i]; // Update the shortestString if a shorter string is found
-          }
-      }
-          return shortestString;
+function hailMary(word){
+  // Example: querying for a word and getting the pronunciation
+
+  for (const entry of ipa_all_names) {
+    if (entry[0] === word) {
+      const pronunciation = entry[1];
+      return pronunciation;
     }
-    result = setShortestString(split)
   }
-
-  return result
+  return word + "*"
 }
 
 
@@ -1345,6 +1281,17 @@ function convert(myString){
 
 
 
+function convert(word){
+  // Example: querying for a word and getting the pronunciation
+
+  for (const entry of ipa_one_syllable) {
+    if (entry[0] === word) {
+      const pronunciation = entry[1];
+      return pronunciation;
+    }
+  }
+  return word + "*"
+}
 
 
 
@@ -1354,3 +1301,103 @@ function convert(myString){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+function cleanIpaByItself(nameIPA) {
+  const allIPAConsonants = ['l', 'd', 'z', 'b', 't', 'k', 'n', 's', 'w', 'v', 'ð', 'ʒ', 'ʧ', 'θ', 'h', 'g', 'ʤ', 'ŋ', 'p', 'm', 'ʃ', 'f', 'j', 'r'];
+  
+  for (const consonant of allIPAConsonants) {
+    if (nameIPA.includes(consonant + consonant)) {
+      nameIPA = nameIPA.replace(new RegExp(consonant + consonant, 'g'), consonant);
+    }
+  }
+  
+  nameIPA = nameIPA.replace("ɛɛ", "i");
+  return nameIPA;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function cleanIpasTogether(ipa1, ipa2) {
+  const allIPAConsonants = ['l', 'd', 'z', 'b', 't', 'k', 'n', 's', 'w', 'v', 'ð', 'ʒ', 'ʧ', 'θ', 'h', 'g', 'ʤ', 'ŋ', 'p', 'm', 'ʃ', 'f', 'j', 'r'];
+  const dashAndAllIPACons = [...allIPAConsonants, '-'];
+  const allIPAVowels = ['ɑ', 'a', 'æ', 'ɪ', 'i', 'ɛ', 'e', 'ə', 'ɔ', 'ʊ', 'u', 'o'];
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɑ", "aɪ", dashAndAllIPACons, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "ɑ", dashAndAllIPACons, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "aɪ", dashAndAllIPACons, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "aɪ", allIPAConsonants, ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "j", allIPAConsonants, ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪɛ", allIPAConsonants, ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["l"], ["l"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["l", "r"], ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ['r'], ['k']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ə", ["m"], ["l"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["m"], ["l"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "aɪ", ['v'], ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɛ", ["h"], ["l"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "eɪ", ["z"], ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ə", ["k"], ["r-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "j", ["l"], ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "i", ["l"], ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", dashAndAllIPACons, ['ld']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", ['l'], ['t']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɑ", allIPAConsonants, ["r"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "æ", allIPAConsonants, ["r"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ə", dashAndAllIPACons, ["r"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "aɪ", ["ʤ"], ["l"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɪ", "j", allIPAConsonants, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "eɪ", ["-"], allIPAConsonants);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["k"], ["k"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["g"], ["r"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ['b'], ['k-']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["m"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑh", allIPAConsonants, allIPAConsonants);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "r", "ər", allIPAConsonants, ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "st", allIPAConsonants, ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "ɛs", allIPAConsonants, ["-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "s", allIPAConsonants, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ɪ", allIPAConsonants, allIPAConsonants);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "eɪ", ['z'], ['l']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ɔ", allIPAConsonants, ["n"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ʊ", "ɔ", allIPAConsonants, allIPAConsonants);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "uə", "ɔ", allIPAConsonants, ['r']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "ɔ", dashAndAllIPACons, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "aʊə", dashAndAllIPACons, dashAndAllIPACons);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "u", dashAndAllIPACons, ['r']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "s", "z", allIPAVowels, ['-']);
+  return [ipa1, ipa2];
+}
+
+
+
+
+
+
+
+console.log(compareTwoNames("Johnny Weymouth", "Jean Weymith"))
