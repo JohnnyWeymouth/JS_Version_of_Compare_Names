@@ -7,7 +7,7 @@ const ipa_all_names = JSON.parse(fs.readFileSync('_ipa_all_names.json'));
 
 
 
-export function compareTwoNames(full_name1, full_name2) {
+function compareTwoNames(full_name1, full_name2) {
   var generic_name, name_too_short, names_match, reasoning, word_combo;
   full_name1 = cleanNameByItself(full_name1);
   full_name2 = cleanNameByItself(full_name2);

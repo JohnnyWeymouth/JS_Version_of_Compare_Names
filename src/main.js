@@ -1,7 +1,5 @@
 import { compareTwoNames } from './compareNames.js';
 
-console.log(compareTwoNames("Johnny C Weymouth", "John weymouth christian"));
-
 // Get the HTML element
 const resultElement = document.getElementById('result');
 
