@@ -1,5 +1,7 @@
-const fs = require('fs');
-const fuzz = require('fuzzball')
+import fs from 'fs';
+import {partial_ratio, ratio} from 'fuzzball';
+import unidecode from 'unidecode';
+const surnamesList = JSON.parse(fs.readFileSync('_top_surnames.json'));
 const ipa_one_syllable = JSON.parse(fs.readFileSync('_ipa_one_syllable.json'));
 const ipa_all_names = JSON.parse(fs.readFileSync('_ipa_all_names.json'));
 
@@ -7,7 +9,7 @@ const ipa_all_names = JSON.parse(fs.readFileSync('_ipa_all_names.json'));
 
 
 
-function compareTwoNames(full_name1, full_name2) {
+export function compareTwoNames(full_name1, full_name2) {
   var generic_name, name_too_short, names_match, reasoning, word_combo;
   full_name1 = cleanNameByItself(full_name1);
   full_name2 = cleanNameByItself(full_name2);
@@ -79,7 +81,6 @@ function cleanNameByItself(name) {
   if (name[0] === ' ') { // Removes space at beginning
       name = name.slice(1);
   }
-  const unidecode = require('unidecode');
   name = unidecode(name); // standardizes name into english alphabet
   name = name.replace(/[.,?;!"'*]/g, ''); // Removes Punctuation
   name = name.replace(/-/g, ' '); // Replaces "-" with " "
@@ -516,7 +517,7 @@ function findWhichWordsMatchAndHowWell(name1, name2) {
       let word2 = words2[j];
       
       // Gets the score for how well the words match by using fuzz.partial_ratio
-      let score = fuzz.partial_ratio(word1, word2);
+      let score = partial_ratio(word1, word2);
 
       // Unless word1 or word2 is only an initial, 
       if (word1.length === 1 || word2.length === 1) {
@@ -956,7 +957,6 @@ function isGenericName(name1, name2) {
 
 
 function hasRareSurname(name) {
-  const surnamesList = require('./_top_surnames.json');
   // Isolates the last name
   const nameLower = name.toLowerCase();
   const lastName = nameLower.split(' ').pop();
@@ -1036,8 +1036,6 @@ function pronunciationComparison(name1, name2, namePairs) {
   ipaOfName1 = cleanIpaByItself(ipaOfName1);
   ipaOfName2 = cleanIpaByItself(ipaOfName2);
   [ipaOfName1, ipaOfName2] = cleanIpasTogether(ipaOfName1, ipaOfName2);
-  console.log(ipaOfName1);
-  console.log(ipaOfName2);
 
   // Matches the ipa words within the two names
   // Splits strings into lists of words
@@ -1054,7 +1052,7 @@ function pronunciationComparison(name1, name2, namePairs) {
           const ipaWord2 = ipaWords2[j];
 
           // Use fuzz.ratio to compare the words and store the score
-          let score = fuzz.ratio(ipaWord1, ipaWord2);
+          let score = ratio(ipaWord1, ipaWord2);
 
           // Updates the score if one of the words was an initial
           for (let k = 0; k < namePairs.length; k++) {
@@ -1130,7 +1128,7 @@ function pronunciationComparison(name1, name2, namePairs) {
 
 
 
-function getPronunciation(fullname) {
+export function getPronunciation(fullname) {
   const pList = [];
   for (const word of fullname.split(" ")) {
       pList.push(getIpaOfOneWord(word));
@@ -1161,7 +1159,6 @@ function getPronunciation(fullname) {
 function getIpaOfOneWord(word) {
   // Setup
   word = word.replace(/ /g, "");
-  const unidecode = require('unidecode');
   word = unidecode(word);
   word = word.toLowerCase();
   const pronunciationList = Array(word.length).fill("");
@@ -1178,6 +1175,7 @@ function getIpaOfOneWord(word) {
       // Initialize variables to store the largest matching substring and its length
       substringAdded = false;
       let largestSubstring = "";
+      let largestSubstringPronunciation = "";
       let largestSubstringLen = 0;
       let beginningIndexOfSubstring = 0;
       let endIndexOfSubstring = 0;
@@ -1367,6 +1365,7 @@ function cleanIpasTogether(ipa1, ipa2) {
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "i", ["l"], ["-"]);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", dashAndAllIPACons, ['ld']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", ['l'], ['t']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", allIPAConsonants, ['d']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɑ", allIPAConsonants, ["r"]);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "æ", allIPAConsonants, ["r"]);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ə", dashAndAllIPACons, ["r"]);
@@ -1391,6 +1390,7 @@ function cleanIpasTogether(ipa1, ipa2) {
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "aʊə", dashAndAllIPACons, dashAndAllIPACons);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "u", dashAndAllIPACons, ['r']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "s", "z", allIPAVowels, ['-']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "aʊ", "oʊuə", dashAndAllIPACons, dashAndAllIPACons);
   return [ipa1, ipa2];
 }
 
