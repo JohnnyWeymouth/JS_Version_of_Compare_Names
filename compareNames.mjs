@@ -74,7 +74,7 @@ function cleanNameByItself(name) {
       return "";
   }
   name = name.toLowerCase(); // Makes all letters lowercase
-  name = name.replace(/ +/g, ' '); // Removes more than one space
+  name = name.replace(/ +/g, ' '); // Removes double spaces
   if (name.slice(-1) === ' ') { // Removes space at end
       name = name.slice(0, -1);
   }
@@ -84,19 +84,18 @@ function cleanNameByItself(name) {
   name = unidecode(name); // standardizes name into english alphabet
   name = name.replace(/[.,?;!"'*]/g, ''); // Removes Punctuation
   name = name.replace(/-/g, ' '); // Replaces "-" with " "
-  name = name.replace(/jr/g, '').replace(/junior/g, ''); // Removes jr
-  name = name.replace(/sr/g, '').replace(/senior/g, ''); // Removes sr
-  name = name.replace(/["']/g, ''); // Removes ' and "
-  name = name.replace(/^prof /, '').replace(/ prof/g, '').replace(/professor/g, ''); // Removes professor
-  name = name.replace(/^mr /, ' ').replace(/ mr/g, '').replace(/mister /g, ''); // Removes mister
-  name = name.replace(/^mrs /, ' ').replace(/ mrs/g, '').replace(/missus /g, ''); // Removes missus
-  name = name.replace(/^ms /, ' ').replace(/ ms/g, '').replace(/ miss /g, ' '); // Removes missus
-  name = name.replace(/ dr$/, '').replace(/^dr /, '').replace(/doctor/g, '').replace(/ dr /g, ''); // Removes doctor
-  name = name.replace(/student/g, ''); // Removes student
-  name = name.replace(/sister/g, ''); // Removes sister
-  name = name.replace(/brother/g, ''); // Removes brother
-  name = name.replace(/mother/g, ''); // Removes mother
-  name = name.replace(/father/g, ''); // Removes father
+  name = name.replace(/\bjr\b/g, "").replace(/\bjunior\b/g, ''); // Removes jr
+  name = name.replace(/\bsr\b/g, "").replace(/\bsenior\b/g, ''); // Removes sr
+  name = name.replace(/\bprof\b/g, '').replace(/\bprofessor\b/g, ''); // Removes professor
+  name = name.replace(/\bmr\b/g, '').replace(/\bmister\b/g, ''); // Removes mister
+  name = name.replace(/\bmrs\b/g, '').replace(/\bmissus\b/g, ''); // Removes missus
+  name = name.replace(/\bms\b/, '').replace(/\bmiss\b/g, ''); // Removes missus
+  name = name.replace(/\bdr\b/, '').replace(/\bdoctor\b/g, ''); // Removes doctor
+  name = name.replace(/\bstudent\b/g, ''); // Removes student
+  name = name.replace(/\bsister\b/g, ''); // Removes sister
+  name = name.replace(/\bbrother\b/g, ''); // Removes brother
+  name = name.replace(/\bmother\b/g, ''); // Removes mother
+  name = name.replace(/\bfather\b/g, ''); // Removes father
   name = name.replace(/ in law/g, ' '); // Removes in law
   name = name.replace(/ +/g, ' '); // Removes more than one space
   name = name.replace(/[1-9][a-z]{2,6}/g, '').replace(/ the /g, ''); // Removes stuff like "the 3rd"
@@ -109,12 +108,13 @@ function cleanNameByItself(name) {
   name = name.replace(/^mc /, 'mc');
   name = name.replace(/ mac /g, ' mac'); // Removes spaces between mac last names
   name = name.replace(/^mac /, 'mac');
+  name = name.replace(' van den ', ' vanden ');
   name = name.replace(/ vander /g, ' vander'); // Removes spaces between vander last names
   name = name.replace(/^vander /, 'vander');
   name = name.replace(/ del /g, ' de '); // Bandaid fix
   name = name.replace(/ +/g, ' '); // Removes more than one space
-  name = name.trim() //Removes extra space at beginning and at end
-  return name
+  name = name.trim(); //Removes extra space at beginning and at end
+  return name;
 }
 
 
@@ -187,6 +187,8 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "erle", "earle");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irl", "earl");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irl", "earle");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irwind", "erwin");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irwin", "erwin");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "evert", "everette");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "evert", "everett");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "evert", "everet");
@@ -194,6 +196,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "dally", "dolly");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "dorothea", "dorothy");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "dorotha", "dorothea");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "freer", "freier");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "francois", "frank");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "francis", "frank");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "frances", "frank");
@@ -209,6 +212,8 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "geroge", "george");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "geo", "geroge");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "gerty", "gertrude");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jule", "julia");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "july", "julia");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "julia", "giuliana");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "trudy", "gertrude");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "hass", "haas");
@@ -231,7 +236,9 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "izaak", "isaac");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "isac", "isaac");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jas", "james");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jack", "jacob");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jerimah", "jeremiah");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jeremonah", "jeremiah");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jean", "john");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jean", "johnny");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jack", "john");
@@ -246,6 +253,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "joseh", "joseph");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "josy", "josephine");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "josh", "josiah");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jimmae", "jimmy");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "jro", "jerome");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "juddy", "judy");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "julia", "juliette");
@@ -259,6 +267,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "katharine", "katherine");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "kath", "katherine");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "katy", "katherine");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "kruscher", "kreischer");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "leo", "leon");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "leonhard", "leonard");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "llyod", "lloyd");
@@ -286,7 +295,8 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "maggy", "magnolia");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "maher", "maire");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "mary", "miriam");
-  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "micheal", "michell")    
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "micheal", "michell");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "michalsen", "michaelson");  
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "polly", "mary");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "marty", "martin");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "matt", "matthew");
@@ -317,6 +327,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ross", "rose");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ridenner", "ridenour");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ridener", "ridenour");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rider", "rieder");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "dick", "richard");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rager", "roger");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rolin", "ryland");
@@ -385,6 +396,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = removeArticles(fullName1, fullName2, "der");
   [fullName1, fullName2] = removeArticles(fullName1, fullName2, "den");
   [fullName1, fullName2] = removeArticles(fullName1, fullName2, "von");
+  [fullName1, fullName2] = removeArticles(fullName1, fullName2, "vanden");
   [fullName1, fullName2] = removeArticles(fullName1, fullName2, "van");
 
   // Take care of weird spellings by comparing to the other name
@@ -398,6 +410,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "c", "s", ['t'], ['h']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "y", "ey", consonants, ['-']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "i", "y", consonants, ['-']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "i", "e", ['g'], ['n']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ce", "sa", consonants, consonants);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ou", "oe", consonants, consonants);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "o", ['n'], ['n']);
@@ -422,10 +435,18 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "d", "t", ['r'], ['el']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "kow", "cow", consonants, ['-']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "kow", "cowe", consonants, ['-']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ole", "ol", ["-"], consonants);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ole", "ol", consonants, consonants);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ow", "ou", consonants, consonants);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "oo", "oa", consonants, ['r']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ue", "uc", consonants, ['k']);
   [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ue", "e", consonants, ['w']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ri", "e", ['f'], ['d']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "o", "a", consonants, ['n-']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ch", "ck", ['a'], ['s']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "chs", "xe", ['a'], ['-']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ae", "aa", consonants, consonants);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "u", "oo", ['l'], ['s']);
 
   //Remove extra spaces
   fullName1 = fullName1.trim();
@@ -1322,7 +1343,7 @@ function convert(word){
 
 
 
-function cleanIpaByItself(nameIPA) {
+export function cleanIpaByItself(nameIPA) {
   const allIPAConsonants = ['l', 'd', 'z', 'b', 't', 'k', 'n', 's', 'w', 'v', 'ð', 'ʒ', 'ʧ', 'θ', 'h', 'g', 'ʤ', 'ŋ', 'p', 'm', 'ʃ', 'f', 'j', 'r'];
   for (const consonant of allIPAConsonants) {
     let doubleConsonant = consonant + consonant;
@@ -1332,6 +1353,7 @@ function cleanIpaByItself(nameIPA) {
   }
   nameIPA = nameIPA.replace("ɛɛ", "i");
   nameIPA = nameIPA.replace("ɪɪ", "ɪ");
+  nameIPA = nameIPA.replace(",","")
   return nameIPA;
 }
 
@@ -1354,7 +1376,7 @@ function cleanIpaByItself(nameIPA) {
 
 
 
-function cleanIpasTogether(ipa1, ipa2) {
+export function cleanIpasTogether(ipa1, ipa2) {
   const allIPAConsonants = ['l', 'd', 'z', 'b', 't', 'k', 'n', 's', 'w', 'v', 'ð', 'ʒ', 'ʧ', 'θ', 'h', 'g', 'ʤ', 'ŋ', 'p', 'm', 'ʃ', 'f', 'j', 'r'];
   const dashAndAllIPACons = [...allIPAConsonants, '-'];
   const allIPAVowels = ['ɑ', 'a', 'æ', 'ɪ', 'i', 'ɛ', 'e', 'ə', 'ɔ', 'ʊ', 'u', 'o'];
@@ -1389,6 +1411,9 @@ function cleanIpasTogether(ipa1, ipa2) {
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["g"], ["r"]);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ['b'], ['k-']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["m"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["b"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ə", ["m"], ["n-"]);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "a", ["m"], ["n-"]);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑh", allIPAConsonants, allIPAConsonants);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "r", "ər", allIPAConsonants, ["-"]);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "st", allIPAConsonants, ["-"]);
@@ -1402,6 +1427,7 @@ function cleanIpasTogether(ipa1, ipa2) {
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "ɔ", dashAndAllIPACons, dashAndAllIPACons);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "aʊə", dashAndAllIPACons, dashAndAllIPACons);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "u", dashAndAllIPACons, ['r']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "oʊw", allIPAConsonants, ['-']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "au", ['n'], ['m']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "aʊ", ['n'], ['m']);
   [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "aʊ", "oʊuə", dashAndAllIPACons, dashAndAllIPACons);
