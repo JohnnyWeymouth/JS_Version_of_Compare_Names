@@ -1,4 +1,4 @@
-import { compareTwoNames } from './compareNames.mjs';
+import { compareTwoNames } from '../compareNames.mjs';
 
 // Get the HTML element
 const resultElement = document.getElementById('result');

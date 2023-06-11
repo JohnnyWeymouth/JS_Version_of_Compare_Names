@@ -82,7 +82,7 @@ function cleanNameByItself(name) {
       name = name.slice(1);
   }
   name = unidecode(name); // standardizes name into english alphabet
-  name = name.replace(/[.,?;!"'*]/g, ''); // Removes Punctuation
+  name = name.replace(/[.,?;!"'*()]/g, ''); // Removes Punctuation
   name = name.replace(/-/g, ' '); // Replaces "-" with " "
   name = name.replace(/\bjr\b/g, "").replace(/\bjunior\b/g, ''); // Removes jr
   name = name.replace(/\bsr\b/g, "").replace(/\bsenior\b/g, ''); // Removes sr
@@ -153,6 +153,10 @@ function cleanNamesTogether(fullName1, fullName2) {
   fullName1 = fullName1.replace("ie ", "y ");
   fullName2 = fullName2.replace("ie ", "y ");
 
+  // Replace to 'i' if 'i' and 'y' used interchangeably
+  [fullName1, fullName2] = replaceInterchangeables(fullName1, fullName2, "i", "y");
+  [fullName1, fullName2] = replaceInterchangeables(fullName1, fullName2, "ll", "l");
+
   // Replace nicknames with the standard name
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "abram", "abraham");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "burt", "albert");
@@ -172,6 +176,8 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "carl", "carlo");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "callidge", "coolidge");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "claire", "clara");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "claire", "clairice");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "claire", "clarice");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "chas", "charles");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "chuck", "charles");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "koch", "cox");
@@ -187,6 +193,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "erle", "earle");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irl", "earl");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irl", "earle");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ernst", "ernest");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irwind", "erwin");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "irwin", "erwin");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "evert", "everette");
@@ -325,6 +332,11 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "piere", "peter");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "philippe", "philip");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ramsey", "romsay");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "read", "reed");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rolph", "ralph");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rolph", "ralf");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rolf", "ralph");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "rolf", "ralf");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ross", "rose");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ridenner", "ridenour");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "ridener", "ridenour");
@@ -356,9 +368,12 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "thomis", "tom");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "thos", "tom");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "valentin", "valentine");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "virgy", "virgil");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "waller", "walter");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "wese", "wise");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "wese", "weise");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "welch", "welsch");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "welch", "welsh");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "mena", "mina");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "wilhemina", "wilhelmina");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "minny", "wilhelmina");
@@ -373,6 +388,7 @@ function cleanNamesTogether(fullName1, fullName2) {
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "bill", "william");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "billy", "william");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "wise", "weiss");
+  [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "von", "van");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "zoy", "zoey");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "zoe", "zoey");
   [fullName1, fullName2] = cleanAwayNickname(fullName1, fullName2, "zoy", "zowy");
@@ -407,47 +423,48 @@ function cleanNamesTogether(fullName1, fullName2) {
 
   var consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
   var all_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "c", "cc", all_letters, all_letters);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "c", "s", ['t'], ['h']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "y", "ey", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "i", "y", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "i", "e", ['g'], ['n']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ce", "sa", consonants, consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ou", "oe", consonants, consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "o", ['n'], ['n']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "ai", consonants, ['th-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "ay", consonants, consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ron", "an", ['f'], ['t']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "sc", "s", ['-'], ['h']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "s", "z", ['t'], ['e']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "e", "z", ['s'], ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "s", "c", ['a'], ['e']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ee", "ea", ['-r'], ['d-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "e", ['h'], ['lm']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "e", ['r'], ['n-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "ai", ['b'], ['t']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "tt", "d", ['a'], ['el']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "tt", "dd", ['a'], ['el']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "le", "el", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "asure", "azer", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "toun", "town", ['-'], consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ee", "y", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "k", "c", ['-'], ['oh']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "d", "t", ['r'], ['el']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "kow", "cow", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "kow", "cowe", consonants, ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ole", "ol", ["-"], consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ole", "ol", consonants, consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ow", "ou", consonants, consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "oo", "oa", consonants, ['r']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ue", "uc", consonants, ['k']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ue", "e", consonants, ['w']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ri", "e", ['f'], ['d']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "o", "a", consonants, ['n-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ch", "ck", ['a'], ['s']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "chs", "xe", ['a'], ['-']);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ae", "aa", consonants, consonants);
-  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "u", "oo", ['l'], ['s']);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "c", "cc", all_letters, all_letters, 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "c", "s", ['t'], ['h'], 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "y", "ey", consonants, ['-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "i", "y", consonants, ['-'], 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "i", "e", ['g'], ['n'], 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ce", "sa", consonants, consonants, 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ou", "oe", consonants, consonants, 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "o", ['n'], ['n'], 6);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "ai", consonants, ['th-'], 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "ay", consonants, consonants, 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ron", "an", ['f'], ['t'], 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "sc", "s", ['-'], ['h'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "s", "z", ['t'], ['e'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "e", "z", ['s'], ['-'], 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "s", "c", ['a'], ['e'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ee", "ea", ['-r'], ['d-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "e", ['h'], ['lm'], 6);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "e", ['r'], ['n-'], 6);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "a", "ai", ['b'], ['t'], 6);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "tt", "d", ['a'], ['el'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "tt", "dd", ['a'], ['el'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "le", "el", consonants, ['-'], 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "asure", "azer", consonants, ['-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "toun", "town", ['-'], consonants, 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ee", "y", consonants, ['-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "k", "c", ['-'], ['oh'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "d", "t", ['r'], ['el'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "kow", "cow", consonants, ['-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "kow", "cowe", consonants, ['-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ole", "ol", ["-"], consonants, 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ole", "ol", consonants, consonants, 4);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ow", "ou", consonants, consonants, 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "oo", "oa", consonants, ['r'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ue", "uc", consonants, ['k'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ue", "e", consonants, ['w'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ri", "e", ['f'], ['d'], 6);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "o", "a", consonants, ['n-'], 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ch", "ck", ['a'], ['s'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "chs", "xe", ['a'], ['-'], 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ae", "aa", consonants, consonants, 0);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "u", "oo", ['l'], ['s'], 5);
+  [fullName1, fullName2] = replaceSubstringSandwichMiddleIfMatchingBread(fullName1, fullName2, "ma", "na", all_letters, ['-'], 5);
 
   //Remove extra spaces
   fullName1 = fullName1.trim();
@@ -537,8 +554,50 @@ function removeOrInNames(name1, name2) {
 
 
 
+function replaceInterchangeables(name1, name2, toReplace, replacement){
+  name1 = name1.toLowerCase().trim();
+  name2 = name2.toLowerCase().trim();
+  let words1 = name1.split(" ");
+  let words2 = name2.split(" ");
+  const word_combo = findWhichWordsMatchAndHowWell(name1, name2);
+  for (let match of word_combo){
+    let wordIndexOfName1 = parseInt(match[0]);
+    let wordIndexOfName2 = parseInt(match[1]);
+    if (words1[wordIndexOfName1].replace(toReplace,replacement) === words2[wordIndexOfName2]){
+      words1[wordIndexOfName1] = words1[wordIndexOfName1].replace(toReplace,replacement);
+    }
+    else if (words1[wordIndexOfName1] === words2[wordIndexOfName2].replace(toReplace,replacement) ){
+      words2[wordIndexOfName2] = words2[wordIndexOfName2].replace(toReplace,replacement);
+    }
+  }
+  name1 = words1.join(" ");
+  name2 = words2.join(" ");
+  return [name1, name2];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function findWhichWordsMatchAndHowWell(name1, name2) {
   // Split strings into lists of words
+  name1 = name1.trim();
+  name2 = name2.trim();
   let words1 = name1.split(' ');
   let words2 = name2.split(' ');
 
@@ -830,7 +889,7 @@ function fixBothNamesSpellingWithRegex(name1, name2, regexToReplace, regexPresen
 
 
 
-function replaceSubstringSandwichMiddleIfMatchingBread(string1, string2, middle_option_1, middle_option_2, bread_1, bread_2) {
+function replaceSubstringSandwichMiddleIfMatchingBread(string1, string2, middle_option_1, middle_option_2, bread_1, bread_2, min_required_letters) {
   if ((!string1.includes(middle_option_1) && !string1.includes(middle_option_2)) || (!string2.includes(middle_option_1) && !string2.includes(middle_option_2))) {
       return [string1, string2];
   }
@@ -844,7 +903,9 @@ function replaceSubstringSandwichMiddleIfMatchingBread(string1, string2, middle_
       var match_index_string2 = parseInt(match[1]);
       var word_in_string1 = final_string_1[match_index_string1];
       var word_in_string2 = final_string_2[match_index_string2];
-
+      if (word_in_string1.length < min_required_letters || word_in_string2.length < min_required_letters) {
+        continue;
+      }
       word_in_string1 = "-" + word_in_string1 + "-";
       word_in_string2 = "-" + word_in_string2 + "-";
 
@@ -1163,7 +1224,7 @@ function pronunciationComparison(name1, name2, namePairs) {
 
 
 
-export function getPronunciation(fullname) {
+function getPronunciation(fullname) {
   const pList = [];
   for (const word of fullname.split(" ")) {
       pList.push(getIpaOfOneWord(word));
@@ -1191,7 +1252,7 @@ export function getPronunciation(fullname) {
 
 
 
-export function getIpaOfOneWord(word) {
+function getIpaOfOneWord(word) {
   // Setup
   word = word.replace(/ /g, "");
   word = unidecode(word);
@@ -1344,7 +1405,7 @@ function convert(word){
 
 
 
-export function cleanIpaByItself(nameIPA) {
+function cleanIpaByItself(nameIPA) {
   const allIPAConsonants = ['l', 'd', 'z', 'b', 't', 'k', 'n', 's', 'w', 'v', 'ð', 'ʒ', 'ʧ', 'θ', 'h', 'g', 'ʤ', 'ŋ', 'p', 'm', 'ʃ', 'f', 'j', 'r'];
   for (const consonant of allIPAConsonants) {
     let doubleConsonant = consonant + consonant;
@@ -1354,7 +1415,8 @@ export function cleanIpaByItself(nameIPA) {
   }
   nameIPA = nameIPA.replace("ɛɛ", "i");
   nameIPA = nameIPA.replace("ɪɪ", "ɪ");
-  nameIPA = nameIPA.replace(",","")
+  nameIPA = nameIPA.replace("iɪ", "i");
+  nameIPA = nameIPA.replace(",","");
   return nameIPA;
 }
 
@@ -1377,77 +1439,68 @@ export function cleanIpaByItself(nameIPA) {
 
 
 
-export function cleanIpasTogether(ipa1, ipa2) {
+function cleanIpasTogether(ipa1, ipa2) {
   const allIPAConsonants = ['l', 'd', 'z', 'b', 't', 'k', 'n', 's', 'w', 'v', 'ð', 'ʒ', 'ʧ', 'θ', 'h', 'g', 'ʤ', 'ŋ', 'p', 'm', 'ʃ', 'f', 'j', 'r'];
   const dashAndAllIPACons = [...allIPAConsonants, '-'];
   const allIPAVowels = ['ɑ', 'a', 'æ', 'ɪ', 'i', 'ɛ', 'e', 'ə', 'ɔ', 'ʊ', 'u', 'o'];
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɑ", "aɪ", dashAndAllIPACons, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "ɑ", dashAndAllIPACons, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "aɪ", dashAndAllIPACons, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "j", ['k'], ['s']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "aɪ", allIPAConsonants, ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "j", allIPAConsonants, ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪɛ", allIPAConsonants, ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["l"], ["l"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["l", "r"], ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ['r'], ['k']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ə", ["m"], ["l"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["m"], ["l"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "aɪ", ['v'], ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɛ", ["h"], ["l"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "eɪ", ["z"], ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ə", ["k"], ["r-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "j", ["l"], ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "i", ["l"], ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", dashAndAllIPACons, ['ld']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", ['l'], ['t']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", allIPAConsonants, ['d']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɑ", allIPAConsonants, ["r"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "æ", allIPAConsonants, ["r"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ə", dashAndAllIPACons, ["r"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "aɪ", ["ʤ"], ["l"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɪ", "j", allIPAConsonants, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "eɪ", ["-"], allIPAConsonants);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["k"], ["k"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["g"], ["r"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ['b'], ['k-']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["m"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["b"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ə", ["m"], ["n-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "a", ["m"], ["n-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑh", allIPAConsonants, allIPAConsonants);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "r", "ər", allIPAConsonants, ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "st", allIPAConsonants, ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "ɛs", allIPAConsonants, ["-"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "s", allIPAConsonants, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ɪ", allIPAConsonants, allIPAConsonants);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "eɪ", ['z'], ['l']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ɔ", allIPAConsonants, ["n"]);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ʊ", "ɔ", allIPAConsonants, allIPAConsonants);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "uə", "ɔ", allIPAConsonants, ['r']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "ɔ", dashAndAllIPACons, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "aʊə", dashAndAllIPACons, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "u", dashAndAllIPACons, ['r']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "oʊw", allIPAConsonants, ['-']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "au", ['n'], ['m']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "aʊ", ['n'], ['m']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "aʊ", "oʊuə", dashAndAllIPACons, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "s", "z", allIPAVowels, ['-']);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æŋ", "ɛng", allIPAConsonants, dashAndAllIPACons);
-  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɪs", "iz", ['n'], ['-']);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "ju", dashAndAllIPACons, dashAndAllIPACons, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɑ", "aɪ", dashAndAllIPACons, dashAndAllIPACons, 6);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "ɑ", dashAndAllIPACons, dashAndAllIPACons, 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "aɪ", dashAndAllIPACons, dashAndAllIPACons, 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "i", allIPAConsonants, ['-'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "eɪ", "j", ['k'], ['s'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "aɪ", allIPAConsonants, ["-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "j", allIPAConsonants, ["-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪɛ", allIPAConsonants, ["-"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["l"], ["l"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["l", "r"], ["-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ['r'], ['k'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ə", ["m"], ["l"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɪ", ["m"], ["l"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "aɪ", ['v'], ["-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ɛ", ["h"], ["l"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "eɪ", ["z"], ["-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "i", "ə", ["k"], ["r-"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "j", ["l"], ["-"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "i", ["l"], ["-"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", dashAndAllIPACons, ['ld'], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", ['l'], ['t'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɪ", allIPAConsonants, ['d'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ɑ", allIPAConsonants, ["r"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "æ", allIPAConsonants, ["r"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ə", dashAndAllIPACons, ["r"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "ə", ['s'], ["n"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɛ", "aɪ", ["ʤ"], ["l"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɪ", "j", allIPAConsonants, dashAndAllIPACons, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "eɪ", ["-"], allIPAConsonants, 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["k"], ["k"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["g"], ["r"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ['b'], ['k-'], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["m"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["r"], ["b"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ə", ["m"], ["n-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑ", ["m"], ["n-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æ", "ɑh", allIPAConsonants, allIPAConsonants, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "r", "ər", allIPAConsonants, ["-"], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "st", allIPAConsonants, ["-"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "ɛs", allIPAConsonants, ["-"], 4);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "z", "s", allIPAConsonants, dashAndAllIPACons, 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ɪ", allIPAConsonants, allIPAConsonants), 5;
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "eɪ", ['z'], ['l'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ɔ", allIPAConsonants, ["n"], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ʊ", "ɔ", allIPAConsonants, allIPAConsonants, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "uə", "ɔ", allIPAConsonants, ['r'], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "ɔ", dashAndAllIPACons, dashAndAllIPACons, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "aʊə", dashAndAllIPACons, dashAndAllIPACons, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "u", dashAndAllIPACons, ['r'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "oʊ", "oʊw", allIPAConsonants, ['-'], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "au", ['n'], ['m'], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "u", "aʊ", ['n'], ['m'], 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "aʊ", "oʊuə", dashAndAllIPACons, dashAndAllIPACons, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "s", "z", allIPAVowels, ['-'], 4);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "æŋ", "ɛng", allIPAConsonants, dashAndAllIPACons, 0);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ɪs", "iz", ['n'], ['-'], 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "th", "θ", dashAndAllIPACons, allIPAVowels, 5);
+  [ipa1, ipa2] = replaceSubstringSandwichMiddleIfMatchingBread(ipa1, ipa2, "ə", "ʊ", dashAndAllIPACons, ['r'], 0);
   return [ipa1, ipa2];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

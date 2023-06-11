@@ -1,3 +1,3 @@
 from eng_to_ipa import convert
-word = "idea"
+word = "coil"
 print(convert(word))

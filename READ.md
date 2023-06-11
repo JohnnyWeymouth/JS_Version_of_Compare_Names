@@ -1,1 +1,1 @@
-The only important files are compareNames.mjs and all the json files. Everything else is testing.
+The only important files are compareNames.mjs and all the json files. Everything else is in testing.
